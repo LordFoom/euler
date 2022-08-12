@@ -1375,6 +1375,51 @@ pub fn distinct_powers(bound: usize) -> usize{
     ordered_set.len()
 }
 
+pub fn digit_fifth_powers(){
+    //In base 10, the largest digit is 9. If n is the number of digits, as n increases, 9^5 * n < 10^n.
+    // So we do not have to look beyond 9^5 * 6 since 9^5 * 6 < 1,000,000.
+    let mut fifth_nums = Vec::new();
+    let mut curr_sum = 0;
+    let upper_bound:u32 = ((9 as u32).pow(5_u32)) * 6_u32;
+    for i in 2..= upper_bound{
+        i.to_string()
+         .chars()
+            .into_iter()
+            .for_each(|j| curr_sum += j.to_digit(10).unwrap().pow(5_u32));
+        if i == curr_sum{
+            fifth_nums.push(i);
+        }
+        curr_sum = 0;
+    }
+    fifth_nums.iter().for_each(|num| println!("{}", num));
+    println!("Sums of the above: {}", fifth_nums.iter().sum::<u32>());
+
+}
+
+pub fn make_change_for_two_pounds(){
+    let coins = vec![1, 2, 5, 10, 20, 50, 100, 200];
+    let mut table = Vec::with_capacity(201);//200+1
+
+    for i in 0..=200{
+        table.push(Vec::with_capacity(coins.len()));
+        for j in 0..coins.len(){
+            table[i].push(1);
+        }
+    }
+
+    for i in 0..=200{
+        for j in 1..coins.len(){
+            table[i][j]=table[i][j-1];
+            if coins[j]<=i{
+                table[i][j] += table[i - coins[j]][j];
+            }
+        }
+    }
+
+    println!("{}", table[200][coins.len()-1]);
+
+}
+
 fn main() {
 
 
@@ -1443,5 +1488,19 @@ mod test{
     #[test]
     pub fn distinct_powers_yeah(){
         println!("{}", distinct_powers(100));
+    }
+
+    #[test]
+    pub fn find_fifth_power_num(){
+        // for i in 1..=9{
+        //     println!("{}^5 = {}", i, (i as i32).pow(5_u32));
+        // }
+        digit_fifth_powers()
+        // println!("{}", 9_i32.pow(5));
+
+    }
+    #[test]
+    pub fn do_the_change_making(){
+        make_change_for_two_pounds();
     }
 }
