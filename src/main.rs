@@ -1420,6 +1420,74 @@ pub fn make_change_for_two_pounds(){
 
 }
 
+///The product 7254 is unusual, as the identity, 39 × 186 = 7254, containing multiplicand,
+/// multiplier, and product is 1 through 9 pandigital.
+//
+// Find the sum of all products whose multiplicand/multiplier/product
+// identity can be written as a 1 through 9 pandigital.
+// HINT: Some products can be obtained in more than one way so be sure
+// to only include it once in your sum.
+fn multiplicand_multiplier_product_pandigital_product_sum() -> i32{
+    let digits = vec!["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+    let mut pandigitism = Vec::new();
+    //examine all the factors of a number
+    for i in 2..9999{
+        for j in 1..=((i as f64).sqrt() as i32){
+            if i%j == 0 {
+                let first_factor = j.to_string();
+                let second_factor = (i/j).to_string();
+                let product  = i.to_string();
+                let pp:i32 = format!("{}{}{}", first_factor, second_factor, product).parse().unwrap();
+                if is_pandigital(pp as usize){
+                    println!("The following is pandigital: {} * {} = {}",first_factor, second_factor, product);
+                    if !pandigitism.contains(&i ){//if product not present, put it in the vec
+                        pandigitism.push(i );
+                    }
+                }
+
+            }
+        }
+    }
+
+    pandigitism.iter().sum()
+}
+
+fn is_pandigital(num: usize) -> bool{
+    // println!("Checking this number: {}", num);
+    let distinct_digit_count = 0;
+    let mut dig_check = vec![false; 9];
+    let mut digits: Vec<usize> = Vec::new();
+
+    make_digit_vec(num, &mut digits);
+
+    if digits.len() > 9 || digits.len() < 9 {
+        return false;
+    }
+
+    for i in digits {
+        if i == 0{
+            return false;
+        }
+        // println!("Checking the digit {}", i);
+        if dig_check[i-1] {
+            return false;
+        }else {
+            dig_check[i-1] = true;
+        }
+    }
+
+    dig_check.iter().all(|i| *i)
+}
+
+fn make_digit_vec(n: usize, dig_vec: &mut Vec<usize>) {
+    if n>= 10 {
+        make_digit_vec(n/10, dig_vec);
+    }
+    dig_vec.push(n%10);
+}
+
+
 fn main() {
 
 
@@ -1464,7 +1532,7 @@ mod test{
             curr_fibo = new_fib;
 
         }
-        println!("First dibonacci with 1000 digits: {}, which is the {}th number", curr_fibo, curr_fibo_idx);
+        println!("First fibonacci with 1000 digits: {}, which is the {}th number", curr_fibo, curr_fibo_idx);
 
     }
 
@@ -1502,5 +1570,36 @@ mod test{
     #[test]
     pub fn do_the_change_making(){
         make_change_for_two_pounds();
+    }
+
+    #[test]
+    pub fn test_make_digit_vec(){
+        let test_dig = 549876;
+
+        let mut test_vec: Vec<usize> = Vec::new();
+
+        make_digit_vec(test_dig, &mut test_vec);
+
+        test_vec.into_iter().for_each(|d| println!("{}", d));
+
+    }
+
+    #[test]
+    pub fn test_is_pandigital(){
+        let test_num = 987123456;
+        assert!(is_pandigital(test_num));
+        let test_num_2 = 998764321;
+        assert!(!is_pandigital(test_num_2));
+        let test_num_3 = 98864321;
+        assert!(!is_pandigital(test_num_3));
+        let test_num_4 = 9886;
+        assert!(!is_pandigital(test_num_4));
+    }
+
+    #[test]
+    pub fn test_pandigital_products(){
+        let sum = multiplicand_multiplier_product_pandigital_product_sum();
+        println!("The sum of all the product part of pandigititial multiplier/multiplicand/product numbers is = {}", sum);
+
     }
 }
