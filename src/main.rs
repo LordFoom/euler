@@ -1493,6 +1493,130 @@ fn main() {
 
 }
 
+fn peculiar_factorial_digits() ->Vec<u32>{
+
+    let mut peculiar_nums = Vec::new();
+    for i in 3..365000{
+        //get the digits
+        let mut sum = 0;
+        for c in i.to_string().chars(){
+            let digit = c.to_digit(10) .unwrap();
+            if digit>8 {//otherwise too many digits in the product
+                break;
+            }
+            sum += factorial(digit);
+        };
+        if sum == i{
+            peculiar_nums.push(i);
+        }
+    }
+    peculiar_nums
+}
+
+fn factorial(num:u32)->u32{
+    factorial_seeded(num, 1)
+}
+fn factorial_seeded(num:u32, total:u32)->u32{
+    if num == 1 || num == 0{
+        return total*1;
+    }
+    let running_total = total*num;
+    let new_num = num-1;
+    factorial_seeded(new_num, running_total)
+}
+
+fn digit_cancelling_fractions(){
+
+    let mut peculiar_fractions: Vec<(u32, u32)> = Vec::new();
+    let mut original_fractions: Vec<(u32, u32)> = Vec::new();
+
+    for denominator in 11..99{
+        let denom_str = denominator.to_string();
+        if denominator%10 == 0{
+            continue;
+        }
+        for enumerator in 11..99{
+            if enumerator >= denominator {
+                break;
+            }
+           if enumerator%10 == 0{
+               continue;
+           }
+           if enumerator%denominator == 1{
+               continue;
+           }
+
+           //see if the numbers contain a digit in common
+           let mut digit_found = false;
+           let mut found_digit = '0';
+           let mut enum_new = 0;
+           let mut denom_new = 0;
+
+            let enum_str = enumerator.to_string();
+           for dig1 in enum_str.chars(){
+               if denom_str.contains(dig1){
+                   digit_found = true;
+                   found_digit = dig1;
+               }
+           }
+
+           if digit_found {
+               let enum_tmp_str = enum_str.replace(found_digit, "");
+               if enum_tmp_str.len()==0{
+                   continue;//duplicate, just keep going
+               }
+               let denom_tmp_str = denom_str.replace(found_digit, "");
+               if denom_tmp_str.len()==0{
+                   continue;//duplicate, just keep going
+               }
+               enum_new = enum_tmp_str.parse::<>().unwrap();
+               denom_new = denom_tmp_str.parse::<u32>().unwrap();
+               //see if the result of cancelling the digits is the same as the result of the normal fraction
+               let orig_ratio = enumerator as f64 / denominator as f64;
+               let new_ratio = enum_new as f64 / denom_new as f64;
+               if orig_ratio == new_ratio {
+                   println!("{}/{}={}, {} = {}/{}",enumerator, denominator, orig_ratio, new_ratio, enum_new, denom_new );
+                   peculiar_fractions.push((enum_new, denom_new));
+                   original_fractions.push((enumerator,denominator));
+               }
+           }
+       }
+    }
+
+
+
+    original_fractions.iter().for_each(|(e,d)| println!("{}/{}", e, d));
+    peculiar_fractions.iter().for_each(|(e,d)| println!("{}/{}", e, d));
+    let (denom_prod, enum_prod) = peculiar_fractions.iter().fold((1,1), |(a1,a2),(e, d)| (a1*e,a2 * d));
+    println!("Product is is {}/{}", denom_prod, enum_prod);
+}
+
+fn gcd(first_num:i32, second_num:i32)->i32{
+    let mut gcd = 1;
+    //set the upper bound to the sqrt of the larger number
+    let upper_bound = ((if first_num> second_num {
+        first_num
+    }else{
+        second_num
+    }) as f64).sqrt() as i32;
+    for i in 2..=upper_bound{
+        if first_num % i == 0 && second_num%i == 0{
+            if i > gcd{
+                gcd = i;
+            }
+            let first_alternate_prod = first_num/i;
+            let second_alternate_prod = second_num/i;
+            if first_num%second_alternate_prod == 0 && second_alternate_prod>gcd{
+                gcd = second_alternate_prod;
+            }
+            if second_num%first_alternate_prod == 0 && first_alternate_prod>gcd{
+                gcd = first_alternate_prod;
+            }
+        }
+    }
+    gcd
+}
+
 
 #[cfg(test)]
 mod test{
@@ -1601,5 +1725,38 @@ mod test{
         let sum = multiplicand_multiplier_product_pandigital_product_sum();
         println!("The sum of all the product part of pandigititial multiplier/multiplicand/product numbers is = {}", sum);
 
+    }
+
+    #[test]
+    pub fn test_factorial(){
+        let factorial_smaller_ = factorial(3);
+        assert_eq!(factorial_smaller_, 6);
+        let factorial_bigger = factorial(9);
+        assert_eq!(factorial_bigger, 362880);
+    }
+
+    #[test]
+    pub fn test_peculiar_factorial_digits(){
+        let digits = peculiar_factorial_digits();
+        let dig_sim = digits.iter()
+                            .sum::<u32>();
+        println!("Found {} numbers with peculiar factorial digits, which sum up to {}", digits.len(), dig_sim);
+        println!("These are the numbers :");
+        digits.iter().for_each(|d| println!("{}", d));
+    }
+
+    #[test]
+    pub fn test_gcd(){
+        let tn = gcd(12,15);
+        assert_eq!(tn, 3);
+        let tn = gcd(10,100);
+        assert_eq!(tn, 10);
+        let tn = gcd(121,33);
+        assert_eq!(tn, 11);
+    }
+
+    #[test]
+    pub fn test_public_numbers(){
+       digit_cancelling_fractions()
     }
 }
