@@ -90,6 +90,21 @@ pub fn is_prime(num_to_check: u64)->bool{
     factor_found
 }
 
+pub fn is_prime_cached(num_to_check:u64, found_primes: &mut BTreeSet<u64>)->bool{
+    if found_primes.contains(&num_to_check){
+        return true;
+    }
+
+
+    let prime = is_prime(num_to_check);
+
+    if prime{
+        found_primes.insert(num_to_check);
+    }
+
+    prime
+}
+
 // pub fn is_prime_neg_or_pos(num_to_check: u64)->bool{
 //     let factor_found =  !(2..=((num_to_check as f64).sqrt() as u64))
 //         .any(|i| {
@@ -1617,6 +1632,41 @@ fn gcd(first_num:i32, second_num:i32)->i32{
     gcd
 }
 
+fn circular_primes(upper_bound: u32)->Vec<u32>{
+    let mut circ_p = Vec::new();
+    let mut prime_cache = BTreeSet::new();
+    for n in 2..upper_bound{
+        let rotations = rotations(n);
+        if rotations.iter().all(|r| is_prime_cached(*r as u64, &mut prime_cache)){
+            circ_p.push(n);
+        }
+    }
+    circ_p
+}
+
+///Get the rotations of a number,
+/// eg for 2, it's 2,
+/// for 12 it's 12 and 21
+/// for 123 it's 123, 231, 312
+fn rotations(n:u32)->Vec<u32>{
+    let mut rots = Vec::new();
+    // rots.push(n);
+    let mut n_str = n.to_string();
+
+    //number of rotations is length of string,
+    //because we only ever move the number along to the left,
+    //and putting leftmost to the right
+    let number_rotations = n_str.len();
+    for i in 0..number_rotations{
+        let head = n_str.get(0..1).unwrap();
+        let tail = n_str.get(1..).unwrap();
+        let n_tmp = format!("{}{}", tail, head);
+        rots.push(n_tmp.parse::<u32>().unwrap() );
+        n_str = n_tmp;
+    }
+
+    rots
+}
 
 #[cfg(test)]
 mod test{
@@ -1758,5 +1808,34 @@ mod test{
     #[test]
     pub fn test_public_numbers(){
        digit_cancelling_fractions()
+    }
+
+    #[test]
+    pub fn test_circular_primes(){
+        let circ_p = circular_primes(100);
+        circ_p.iter().for_each(|p|println!("Circular prime: {}", p));
+        // for p in circ_p{
+        //     println!("{} is a circular prime", p)
+        // }
+    }
+
+    #[test]
+    pub fn test_rotations(){
+        let number = 123;
+        let rotations = rotations(1234);
+        rotations
+            .iter()
+            .for_each(|x| println!("{}", x));
+        assert_eq!(4, rotations.len());
+
+    }
+
+    #[test]
+    pub fn rotated_primes(){
+        let num_circ_primes = circular_primes(1000_000);
+        // assert_eq!(13, num_circ_primes.len());
+        num_circ_primes.iter().for_each(|x| println!("{}", x));
+
+        println!("Total number of circular primes: {}", num_circ_primes.len());
     }
 }
