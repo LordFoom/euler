@@ -3,9 +3,7 @@
 #![allow(unused_variables)]
 #![allow(unused_assignments)]
 extern crate core;
-extern crate core;
 
-use core::panicking::panic;
 use rust_decimal::prelude::*;
 
 use std::collections::{BTreeMap, BTreeSet, HashMap};
@@ -87,10 +85,13 @@ impl Fibonacci{
 }
 
 pub fn is_prime(num_to_check: u64)->bool{
-    let factor_found =  !(2..=((num_to_check as f64).sqrt() as u64))
+    let is_prime =  !(2..=((num_to_check as f64).sqrt() as u64))
         .any(|i|  num_to_check%i == 0 );
+    // if is_prime{
+    //     println!("Found prime number {num_to_check}")
+    // }
     // println!("Is {} prime? {}", num_to_check, factor_found);
-    factor_found
+    is_prime
 }
 
 pub fn is_prime_cached(num_to_check:u64, found_primes: &mut BTreeSet<u64>)->bool{
@@ -1457,7 +1458,7 @@ fn multiplicand_multiplier_product_pandigital_product_sum() -> i32{
                 let second_factor = (i/j).to_string();
                 let product  = i.to_string();
                 let pp:i32 = format!("{}{}{}", first_factor, second_factor, product).parse().unwrap();
-                if is_pandigital(pp as usize){
+                if is_nine_dig_pandigital(pp as usize){
                     println!("The following is pandigital: {} * {} = {}",first_factor, second_factor, product);
                     if !pandigitism.contains(&i ){//if product not present, put it in the vec
                         pandigitism.push(i );
@@ -1471,7 +1472,7 @@ fn multiplicand_multiplier_product_pandigital_product_sum() -> i32{
     pandigitism.iter().sum()
 }
 
-fn is_pandigital(num: usize) -> bool{
+fn is_nine_dig_pandigital(num: usize) -> bool{
     // println!("Checking this number: {}", num);
     let distinct_digit_count = 0;
     let mut dig_check = vec![false; 9];
@@ -1497,6 +1498,7 @@ fn is_pandigital(num: usize) -> bool{
 
     dig_check.iter().all(|i| *i)
 }
+
 
 fn make_digit_vec(n: usize, dig_vec: &mut Vec<usize>) {
     if n>= 10 {
@@ -1807,7 +1809,7 @@ fn biggest_pandigital_product(){
             // println!("Current product is:{product}");
             let prod_num = product.parse::<u64>().unwrap();
             cur_len=product.len();
-            if is_pandigital(prod_num as usize){
+            if is_nine_dig_pandigital(prod_num as usize){
                 println!("{i}*{multiplicands:?} = {prod_num} is pandigital");
                 if max_pandigital < prod_num {
                     max_pandigital = prod_num;
@@ -1832,33 +1834,97 @@ fn biggest_pandigital_product(){
 ///
 /// If dn represents the nth digit of the fractional part, find the value of the following expression.
 ///
-/// d1 × d10 × d100 × d1000 × d10000 × d100000 × d1000000
+/// d1 × d10 × d100 × d1_000 × d10_000 × d100_000 × d1_000_000
 
 fn champernownes_constant(){
-    let mut next_part_of_fraction = 0;
-    let mut fraction_digit_count = 0;
-    let mut pointer =0;
-    let mut digits = Vec::new();
-    let mut significant_digit = 1;
-    while fraction_digit_count <= 1000000 {
-        next_part_of_fraction +=1;
-        if next_part_of_fraction<10{
-            fraction_digit_count += 1;
-        }else if next_part_of_fraction<100{
-            fraction_digit_count += 2;
-        }else if next_part_of_fraction<1000{
-            fraction_digit_count += 3;
-        }else if next_part_of_fraction<10000{
-            fraction_digit_count += 4;
-        }else if next_part_of_fraction<100000{
-            fraction_digit_count += 5;
-        }else{panic!("Got too big!")}
+    let mut number=String::new();
+    let mut digit_count =  0;
+    let mut curr_num = 0;
 
-        //found a digit
-        if pointer == significant_digit{
+    while digit_count<= 1_000_000 {
+        curr_num += 1;
+        if curr_num < 10 {
+            digit_count += 1;
+        } else if curr_num < 100 {
+            digit_count += 2;
+        } else if curr_num < 1000 {
+            digit_count += 3;
+        } else if curr_num < 10_000 {
+            digit_count += 4;
+        } else if curr_num < 100_000 {
+            digit_count += 5;
+        } else if curr_num < 1_000_000 {
+            digit_count += 5;
+        } else { panic!("Got too big! {curr_num}, digit_count {digit_count}") }
 
+        number = format!("{number}{curr_num}")
+    }
+
+
+    let mut ca = number.as_bytes();
+    println!("this is the 12th digit...{}", (ca[11] as char).to_digit(10).unwrap() );
+    let d1 = (ca[0] as char).to_digit(10).unwrap() as u64;
+    let d10 = (ca[9] as char).to_digit(10).unwrap() as u64;
+    let d100 = (ca[99] as char).to_digit(10).unwrap() as u64;
+    let d1000 = (ca[999] as char).to_digit(10).unwrap() as u64;
+    let d10_000 = (ca[9999] as char).to_digit(10).unwrap() as u64;
+    let d100_000 = (ca[99999] as char).to_digit(10).unwrap() as u64;
+    let d1000_000 = (ca[999999] as char).to_digit(10).unwrap() as u64;
+    
+    let product = d1*d10*d100*d1000*d10_000* d100_000 * d1000_000;
+    println!("the number is {product} = {d1}*{d10}*{d100}*{d1000}*{d10_000}*{d100_000}*{d1000_000}");
+}
+
+fn is_pandigital(num:usize)-> bool {
+// println!("Checking this number: {}", num);
+    let distinct_digit_count = 0;
+    let mut digits: Vec<usize> = Vec::new();
+
+    make_digit_vec(num, &mut digits);
+    let num_digits = digits.len();
+    //make a boolean vector to say if all digits were matched, eg 1,2,3,4 for a 4-length digits eg 2341
+    //or 1,2,3,4,5,6 for a 6 digit and so on
+    let mut dig_check = vec![false; num_digits];
+    if num_digits > 9{//can't be pandigital if more digits than available - could probably make this a radix
+        return false;
+    }
+
+    for i in digits {
+        if i == 0{
+            return false;
+        }
+        if i > num_digits {
+            return false;
+        }
+// println!("Checking the digit {}", i);
+        if dig_check[i-1] {
+            return false;
+        }else {
+            dig_check[i-1] = true;
         }
     }
+
+    //they all must be true
+    let pd = dig_check.iter().all(|i| *i);
+    // if pd{
+    //     println!("Found pandigital number {num}")
+    // }
+    pd
+}
+
+fn pandigital_prime(){
+    let mut max_pp = 0;
+    //get list of primes
+    for i in (1..7654321).rev() {
+       if is_pandigital(i as usize) && is_prime(i){
+           println!("Found pandigital prime {i}");
+           //because we're going backwards it HAS to be the maximum prime
+           max_pp = i;
+           break;
+       }
+    }
+
+    println!("Biggest pandigital prime is {max_pp}");
 }
     #[cfg(test)]
     mod test{
@@ -1953,14 +2019,14 @@ fn champernownes_constant(){
         #[test]
         pub fn test_is_pandigital(){
             let test_num = 987123456;
-            assert!(is_pandigital(test_num));
+            assert!(is_nine_dig_pandigital(test_num));
             let test_num_2 = 998764321;
-            assert!(!is_pandigital(test_num_2));
+            assert!(!is_nine_dig_pandigital(test_num_2));
             let test_num_3 = 98864321;
-            assert!(!is_pandigital(test_num_3));
+            assert!(!is_nine_dig_pandigital(test_num_3));
             let test_num_4 = 9886;
-            assert!(!is_pandigital(test_num_4));
-            assert!(is_pandigital(197394591));
+            assert!(!is_nine_dig_pandigital(test_num_4));
+            assert!(is_nine_dig_pandigital(197394591));
         }
 
         #[test]
@@ -2077,6 +2143,27 @@ fn champernownes_constant(){
         #[test]
         pub fn test_biggest_trunc_prod(){
             biggest_pandigital_product();
+        }
+
+        #[test]
+        pub fn champernownes_constant_test(){
+            champernownes_constant();
+        }
+
+        #[test]
+        pub fn test_pandigital_prime(){
+            pandigital_prime()
+        }
+
+        #[test]
+        pub fn test_is_pandigital_prime(){
+           assert!(is_pandigital(1));
+           assert!(!is_pandigital(2));
+            assert!(is_pandigital(12));
+            assert!(is_pandigital(123));
+            assert!(is_pandigital(321));
+            assert!(!is_pandigital(321454));
+            assert!(is_pandigital(932145876));
         }
     }
 
