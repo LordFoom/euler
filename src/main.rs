@@ -11,6 +11,7 @@ use std::io::{BufRead, BufReader};
 use std::str::FromStr;
 use num_bigint::{BigInt, BigUint};
 use std::ops::Add;
+use itertools::Itertools;
 use num_traits::One;
 // use num_traits::Zero;
 // pub fn sum_multiples_3_5(){
@@ -530,7 +531,7 @@ fn collatz(n : i64)->i64{
 }
 fn collatz_loop(){
 
-    let mut collatz_cache:HashMap<i64,i64> = std::collections::HashMap::new();
+    let mut collatz_cache:HashMap<i64,i64> = HashMap::new();
     let mut max_chain_len = 0;
     let mut curr_chain_len = 1;
     let mut max_chain_num = 0;
@@ -657,7 +658,7 @@ fn sum_digites(n:u32){
             }
         });
 
-    println!("");
+    println!();
     println!("Herewith the sum: {}", sum)
 }
 
@@ -1926,7 +1927,190 @@ fn pandigital_prime(){
 
     println!("Biggest pandigital prime is {max_pp}");
 }
-    #[cfg(test)]
+
+
+
+fn triangle_numbers(){
+    //read in the file
+    let mut triangles = BTreeSet::new();
+    for i in 1..=1_000 {
+        triangles.insert(triangle_num(i)) ;
+    }
+    // let words = std::fs::read_to_string("p042_words.txt").expect("Could not open triangle word file");
+    let words = include_str!("p042_words.txt");
+    let mut tri_word_count  = 0;
+    words.split(",")
+        .for_each(|word| {
+            let sum = word
+                .replace('"', "")
+                .chars()
+                .map(|c|  (c as u32)-64)
+                .reduce(|a,b| a + b )
+                .unwrap();
+            if triangles.contains(&sum){
+                println!("Found triangle word {word}, with sum={sum}");
+               tri_word_count += 1;
+            }/*else{
+                println!("Found NON-TRIANGLE word {word}, with sum={sum}");
+            }*/
+        });
+    println!("Number of triangle numbers is {tri_word_count}");
+}
+
+
+fn triangle_num(nth: usize)->u32{
+    let n =nth as u32;
+    n*(n+1)/2
+}
+
+///like is_pandigital, but 0-9, instead of 1-9
+fn is_zero_pandigital(num:usize)->bool{
+// println!("Checking this number: {}", num);
+    let distinct_digit_count = 0;
+    let mut digits: Vec<usize> = Vec::new();
+
+    make_digit_vec(num, &mut digits);
+    let num_digits = digits.len();
+//make a boolean vector to say if all digits were matched, eg 1,2,3,4 for a 4-length digits eg 2341
+//or 1,2,3,4,5,6 for a 6 digit and so on
+    let mut dig_check = vec![false; num_digits];
+    // check for 10 instead of 9
+    if num_digits > 10{//can't be pandigital if more digits than available - could probably make this a radix
+        return false;
+    }
+
+    //big difference is no fail for zero here
+    for i in digits {
+        if i > num_digits {
+            return false;
+        }
+// println!("Checking the digit {}", i);
+        if dig_check[i] {
+            return false;
+        }else {
+            dig_check[i] = true;
+        }
+    }
+
+//they all must be true
+    let pd = dig_check.iter().all(|i| *i);
+// if pd{
+//     println!("Found pandigital number {num}")
+// }
+    if pd{
+        println!("Found zero pandigital '{num}'");
+    }
+    pd
+}
+
+///d2d3d4=406 is divisible by 2
+///d3d4d5=063 is divisible by 3
+///d4d5d6=635 is divisible by 5
+///d5d6d7=357 is divisible by 7
+///d6d7d8=572 is divisible by 11
+///d7d8d9=728 is divisible by 13
+///d8d9d10=289 is divisible by 17
+fn  is_substring_divisible(num:i64) ->bool{
+    // println!("Checking {num} for substring divisibility");
+    let mut digs = Vec::new();
+     make_digit_vec(num as usize, &mut digs);
+
+    //d2d3d4=406 is divisible by 2
+    let d2d3d4:i32 = get_subnumber(&digs, 1, 3);
+    let is_d2d3d4 = d2d3d4%2 == 0;
+    if !is_d2d3d4 {
+        return false;
+    }
+
+    //d3d4d5=063 is divisible by 3
+    let d3d4d5 = get_subnumber(&digs, 2,4);
+    let is_d3d4d5 = d3d4d5%3 == 0;
+    if !is_d3d4d5{
+        return false;
+    }
+    //d4d5d6=635 is divisible by 5
+    let d4d5d6 = get_subnumber(&digs, 3,5);
+    let is_d4d5d6  = d4d5d6%5 == 0;
+    if !is_d4d5d6{
+       return false;
+    }
+    //d5d6d7=357 is divisible by 7
+    let d5d6d7 = get_subnumber(&digs, 4,6);
+    let is_d5d6d7  = d5d6d7%7 == 0;
+    if !is_d5d6d7  {
+        return false;
+    }
+    //d6d7d8=572 is divisible by 11
+    let d6d7d8 = get_subnumber(&digs, 5,7);
+    let is_d6d7d8   = d6d7d8%11 == 0;
+    if !is_d6d7d8{
+        return false;
+    }
+    //d7d8d9=728 is divisible by 13
+    let d7d8d9 = get_subnumber(&digs, 6,8);
+    let is_d7d8d9  = d7d8d9%13 == 0;
+    if !is_d7d8d9{
+        return false
+    }
+    //d8d9d10=289 is divisible by 17
+    let d8d9d10 = get_subnumber(&digs, 7,9);
+    let is_d8d9d10  = d8d9d10%17 == 0;
+    if !is_d8d9d10{
+        return false
+    }
+    println!("Found substring divisible number: {num}");
+    return true;
+}
+
+fn get_subnumber(digits: &Vec<usize>, start:usize, end:usize)->i32{
+    // println!("{digits:?}");
+    let subnum = digits[start..=end]
+        .iter()
+        .map(|c| {
+           c.to_string()
+        })
+        .collect::<String>();
+    // println!("{subnum}");
+    subnum
+        .parse()
+        .unwrap()
+
+}
+
+///The number, 1406357289, is a 0 to 9 pandigital number because it is made up of each of the digits 0 to 9 in some order, but it also has a rather interesting sub-string divisibility property.
+///
+///Let d1 be the 1st digit, d2 be the 2nd digit, and so on. In this way, we note the following:
+///
+///d2d3d4=406 is divisible by 2
+///d3d4d5=063 is divisible by 3
+///d4d5d6=635 is divisible by 5
+///d5d6d7=357 is divisible by 7
+///d6d7d8=572 is divisible by 11
+///d7d8d9=728 is divisible by 13
+///d8d9d10=289 is divisible by 17
+///Find the sum of all 0 to 9 pandigital numbers with this property.
+fn sub_string_divisibility(){
+   //only need to check prime digital...
+   //  for i in 1_023_456_789..=9_876_543_210{
+   //      if is
+   //
+   //  }
+    let digit_chars = vec!['0','1','2','3','4','5','6','7','8','9'];
+    let permutations = digit_chars.iter().permutations(10);
+    let sum:i64 = permutations
+        .filter(|v| v[0] != &'0')
+        .map(|p| p.into_iter().collect::<String>().parse::<i64>().unwrap())
+        .filter(|num| is_substring_divisible(*num))
+        .sum();
+    // let sum:i64 = (1_023_456_789..=9_876_543_210 as i64)
+    //     .filter(|x| is_zero_pandigital(*x as usize))
+    //     .filter(|pan_digital| is_substring_divisible(*pan_digital))
+    //     // .collect::<Vec<i64>>()
+    //     .sum();
+
+    println!("Current sum is: {sum}")
+}
+
     mod test{
         use super::*;
 
@@ -2157,13 +2341,31 @@ fn pandigital_prime(){
 
         #[test]
         pub fn test_is_pandigital_prime(){
-           assert!(is_pandigital(1));
-           assert!(!is_pandigital(2));
+            assert!(is_pandigital(1));
+            assert!(!is_pandigital(2));
             assert!(is_pandigital(12));
             assert!(is_pandigital(123));
             assert!(is_pandigital(321));
             assert!(!is_pandigital(321454));
-            assert!(is_pandigital(932145876));
+        }
+
+        #[test]
+        pub fn test_triangle_num(){
+            for i in 1..=1000{
+                let num = triangle_num(i);
+                println!("{num}");
+            }
+        }
+
+        #[test]
+        pub fn test_triangle_number(){
+            triangle_numbers()
+        }
+
+        #[test]
+        pub fn test_substring_divisibility(){
+            sub_string_divisibility();
         }
     }
+
 
