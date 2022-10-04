@@ -2,6 +2,9 @@
 #![allow(unused_mut)]
 #![allow(unused_variables)]
 #![allow(unused_assignments)]
+
+mod pentagonal_numbers;
+
 extern crate core;
 
 use rust_decimal::prelude::*;
@@ -2111,261 +2114,261 @@ fn sub_string_divisibility(){
     println!("Current sum is: {sum}")
 }
 
-    mod test{
-        use super::*;
+mod test{
+    use super::*;
 
-        #[test]
-        pub fn test_calc_name_score(){
-            let score = calc_name_score(938, "COLIN");
-            assert_eq!(49714, score);
+    #[test]
+    pub fn test_calc_name_score(){
+        let score = calc_name_score(938, "COLIN");
+        assert_eq!(49714, score);
+    }
+
+    #[test]
+    pub fn test_construct_lex_numbers(){
+        let mut digits = vec!['0', '1','2','3','4','5','6','7','8','9',];
+        // let mut digits = vec!['0', '1','2','3',];
+        let mut count = 1;
+        while count<1_000_000 && construct_lexicagraphical_permutation(&mut digits){
+            count +=1;
         }
+        println!("This is what we end up with at permutation {}: {} ", count, digits.iter().collect::<String>());
 
-        #[test]
-        pub fn test_construct_lex_numbers(){
-            let mut digits = vec!['0', '1','2','3','4','5','6','7','8','9',];
-            // let mut digits = vec!['0', '1','2','3',];
-            let mut count = 1;
-            while count<1_000_000 && construct_lexicagraphical_permutation(&mut digits){
-                count +=1;
-            }
-            println!("This is what we end up with at permutation {}: {} ", count, digits.iter().collect::<String>());
+    }
 
-        }
+    #[test]
+    pub fn digit_fibonacci_with_1000() {
+        let mut digit_count = 1;
+        let mut curr_fibo_idx = 0;
+        let mut curr_fibo = BigInt::from(0);
+        let mut fib = Fibonacci::new();
 
-        #[test]
-        pub fn digit_fibonacci_with_1000() {
-            let mut digit_count = 1;
-            let mut curr_fibo_idx = 0;
-            let mut curr_fibo = BigInt::from(0);
-            let mut fib = Fibonacci::new();
-
-            while digit_count < 1000 {
-                println!("Getting {} fibonacci number, ", curr_fibo_idx);
-                let new_fib = fib.fibonacci(curr_fibo_idx);
-                println!("Fib number is: {} ", new_fib);
-                digit_count = new_fib.to_string().chars().count();
-                curr_fibo_idx +=1;
-                curr_fibo = new_fib;
-
-            }
-            println!("First fibonacci with 1000 digits: {}, which is the {}th number", curr_fibo, curr_fibo_idx);
+        while digit_count < 1000 {
+            println!("Getting {} fibonacci number, ", curr_fibo_idx);
+            let new_fib = fib.fibonacci(curr_fibo_idx);
+            println!("Fib number is: {} ", new_fib);
+            digit_count = new_fib.to_string().chars().count();
+            curr_fibo_idx +=1;
+            curr_fibo = new_fib;
 
         }
+        println!("First fibonacci with 1000 digits: {}, which is the {}th number", curr_fibo, curr_fibo_idx);
 
-        #[test]
-        pub fn fractions(){
-            let (cycle_num, cycle_len) = longest_recurring_cycle(1000);
-            println!("Length of longest decimal: {}, which is for number: {}", cycle_len, cycle_num);
-            // println!("{}", 1./983. );
-        }
+    }
 
-        #[test]
-        pub fn quadratic_formula_detection(){
-            quadratic_expression();
-        }
+    #[test]
+    pub fn fractions(){
+        let (cycle_num, cycle_len) = longest_recurring_cycle(1000);
+        println!("Length of longest decimal: {}, which is for number: {}", cycle_len, cycle_num);
+        // println!("{}", 1./983. );
+    }
 
-        #[test]
-        pub fn calc_spiral_sum(){
-            spiral_sum(1001)
-        }
+    #[test]
+    pub fn quadratic_formula_detection(){
+        quadratic_expression();
+    }
 
-        #[test]
-        pub fn distinct_powers_yeah(){
-            println!("{}", distinct_powers(100));
-        }
+    #[test]
+    pub fn calc_spiral_sum(){
+        spiral_sum(1001)
+    }
 
-        #[test]
-        pub fn find_fifth_power_num(){
-            // for i in 1..=9{
-            //     println!("{}^5 = {}", i, (i as i32).pow(5_u32));
-            // }
-            digit_fifth_powers()
-            // println!("{}", 9_i32.pow(5));
+    #[test]
+    pub fn distinct_powers_yeah(){
+        println!("{}", distinct_powers(100));
+    }
 
-        }
-        #[test]
-        pub fn do_the_change_making(){
-            make_change_for_two_pounds();
-        }
+    #[test]
+    pub fn find_fifth_power_num(){
+        // for i in 1..=9{
+        //     println!("{}^5 = {}", i, (i as i32).pow(5_u32));
+        // }
+        digit_fifth_powers()
+        // println!("{}", 9_i32.pow(5));
 
-        #[test]
-        pub fn test_make_digit_vec(){
-            let test_dig = 549876;
+    }
+    #[test]
+    pub fn do_the_change_making(){
+        make_change_for_two_pounds();
+    }
 
-            let mut test_vec: Vec<usize> = Vec::new();
+    #[test]
+    pub fn test_make_digit_vec(){
+        let test_dig = 549876;
 
-            make_digit_vec(test_dig, &mut test_vec);
+        let mut test_vec: Vec<usize> = Vec::new();
 
-            test_vec.into_iter().for_each(|d| println!("{}", d));
+        make_digit_vec(test_dig, &mut test_vec);
 
-        }
+        test_vec.into_iter().for_each(|d| println!("{}", d));
 
-        #[test]
-        pub fn test_is_pandigital(){
-            let test_num = 987123456;
-            assert!(is_nine_dig_pandigital(test_num));
-            let test_num_2 = 998764321;
-            assert!(!is_nine_dig_pandigital(test_num_2));
-            let test_num_3 = 98864321;
-            assert!(!is_nine_dig_pandigital(test_num_3));
-            let test_num_4 = 9886;
-            assert!(!is_nine_dig_pandigital(test_num_4));
-            assert!(is_nine_dig_pandigital(197394591));
-        }
+    }
 
-        #[test]
-        pub fn test_pandigital_products(){
-            let sum = multiplicand_multiplier_product_pandigital_product_sum();
-            println!("The sum of all the product part of pandigititial multiplier/multiplicand/product numbers is = {}", sum);
+    #[test]
+    pub fn test_is_pandigital(){
+        let test_num = 987123456;
+        assert!(is_nine_dig_pandigital(test_num));
+        let test_num_2 = 998764321;
+        assert!(!is_nine_dig_pandigital(test_num_2));
+        let test_num_3 = 98864321;
+        assert!(!is_nine_dig_pandigital(test_num_3));
+        let test_num_4 = 9886;
+        assert!(!is_nine_dig_pandigital(test_num_4));
+        assert!(is_nine_dig_pandigital(197394591));
+    }
 
-        }
+    #[test]
+    pub fn test_pandigital_products(){
+        let sum = multiplicand_multiplier_product_pandigital_product_sum();
+        println!("The sum of all the product part of pandigititial multiplier/multiplicand/product numbers is = {}", sum);
 
-        #[test]
-        pub fn test_factorial(){
-            let factorial_smaller_ = factorial(3);
-            assert_eq!(factorial_smaller_, 6);
-            let factorial_bigger = factorial(9);
-            assert_eq!(factorial_bigger, 362880);
-        }
+    }
 
-        #[test]
-        pub fn test_peculiar_factorial_digits(){
-            let digits = peculiar_factorial_digits();
-            let dig_sim = digits.iter()
-                                .sum::<u32>();
-            println!("Found {} numbers with peculiar factorial digits, which sum up to {}", digits.len(), dig_sim);
-            println!("These are the numbers :");
-            digits.iter().for_each(|d| println!("{}", d));
-        }
+    #[test]
+    pub fn test_factorial(){
+        let factorial_smaller_ = factorial(3);
+        assert_eq!(factorial_smaller_, 6);
+        let factorial_bigger = factorial(9);
+        assert_eq!(factorial_bigger, 362880);
+    }
 
-        #[test]
-        pub fn test_gcd(){
-            let tn = gcd(12,15);
-            assert_eq!(tn, 3);
-            let tn = gcd(10,100);
-            assert_eq!(tn, 10);
-            let tn = gcd(121,33);
-            assert_eq!(tn, 11);
-        }
+    #[test]
+    pub fn test_peculiar_factorial_digits(){
+        let digits = peculiar_factorial_digits();
+        let dig_sim = digits.iter()
+                            .sum::<u32>();
+        println!("Found {} numbers with peculiar factorial digits, which sum up to {}", digits.len(), dig_sim);
+        println!("These are the numbers :");
+        digits.iter().for_each(|d| println!("{}", d));
+    }
 
-        #[test]
-        pub fn test_public_numbers(){
-            digit_cancelling_fractions()
-        }
+    #[test]
+    pub fn test_gcd(){
+        let tn = gcd(12,15);
+        assert_eq!(tn, 3);
+        let tn = gcd(10,100);
+        assert_eq!(tn, 10);
+        let tn = gcd(121,33);
+        assert_eq!(tn, 11);
+    }
 
-        #[test]
-        pub fn test_circular_primes(){
-            let circ_p = circular_primes(100);
-            circ_p.iter().for_each(|p|println!("Circular prime: {}", p));
-            // for p in circ_p{
-            //     println!("{} is a circular prime", p)
-            // }
-        }
+    #[test]
+    pub fn test_public_numbers(){
+        digit_cancelling_fractions()
+    }
 
-        #[test]
-        pub fn test_rotations(){
-            let number = 123;
-            let rotations = rotations(1234);
-            rotations
-                .iter()
-                .for_each(|x| println!("{}", x));
-            assert_eq!(4, rotations.len());
+    #[test]
+    pub fn test_circular_primes(){
+        let circ_p = circular_primes(100);
+        circ_p.iter().for_each(|p|println!("Circular prime: {}", p));
+        // for p in circ_p{
+        //     println!("{} is a circular prime", p)
+        // }
+    }
 
-        }
+    #[test]
+    pub fn test_rotations(){
+        let number = 123;
+        let rotations = rotations(1234);
+        rotations
+            .iter()
+            .for_each(|x| println!("{}", x));
+        assert_eq!(4, rotations.len());
 
-        #[test]
-        pub fn rotated_primes(){
-            let num_circ_primes = circular_primes(1000_000);
-            // assert_eq!(13, num_circ_primes.len());
-            num_circ_primes.iter().for_each(|x| println!("{}", x));
+    }
 
-            println!("Total number of circular primes: {}", num_circ_primes.len());
-        }
+    #[test]
+    pub fn rotated_primes(){
+        let num_circ_primes = circular_primes(1000_000);
+        // assert_eq!(13, num_circ_primes.len());
+        num_circ_primes.iter().for_each(|x| println!("{}", x));
 
-        #[test]
-        pub fn test_is_decimal_palindrome(){
-            assert!(is_decimal_palindrome(5));
-            assert!(is_decimal_palindrome(1));
-            assert!(is_decimal_palindrome(101));
-            assert!(is_decimal_palindrome(99));
-            assert!(is_decimal_palindrome(500050005));
-            assert!(is_decimal_palindrome(50000005));
-            assert!(!is_decimal_palindrome(500000050));
-            assert!(!is_decimal_palindrome(28));
-        }
+        println!("Total number of circular primes: {}", num_circ_primes.len());
+    }
 
-        #[test]
-        pub fn test_is_binary_palindrome(){
-            assert!(is_binary_palindrome(5));
-            assert!(!is_binary_palindrome(6));
-        }
-        #[test]
-        pub fn test_double_palindrow(){
-            assert!(is_double_base_palindrome(5));
-            assert!(!is_double_base_palindrome(6));
-        }
+    #[test]
+    pub fn test_is_decimal_palindrome(){
+        assert!(is_decimal_palindrome(5));
+        assert!(is_decimal_palindrome(1));
+        assert!(is_decimal_palindrome(101));
+        assert!(is_decimal_palindrome(99));
+        assert!(is_decimal_palindrome(500050005));
+        assert!(is_decimal_palindrome(50000005));
+        assert!(!is_decimal_palindrome(500000050));
+        assert!(!is_decimal_palindrome(28));
+    }
 
-        #[test]
-        pub fn test_find_sum_double_base_palindromes(){
-            find_double_base_palindromes(1_000_000);
-            // find_double_base_palindromes(1_000);
-        }
+    #[test]
+    pub fn test_is_binary_palindrome(){
+        assert!(is_binary_palindrome(5));
+        assert!(!is_binary_palindrome(6));
+    }
+    #[test]
+    pub fn test_double_palindrow(){
+        assert!(is_double_base_palindrome(5));
+        assert!(!is_double_base_palindrome(6));
+    }
 
-        #[test]
-        pub fn test_is_truncatable(){
-            let truncatable = is_truncatable_prime(3797);
-            assert!(truncatable);
-            let non_truncatable = is_truncatable_prime(3792);
-            assert!(!non_truncatable);
-        }
+    #[test]
+    pub fn test_find_sum_double_base_palindromes(){
+        find_double_base_palindromes(1_000_000);
+        // find_double_base_palindromes(1_000);
+    }
 
-        #[test]
-        pub fn find_truncatable_prime(){
-            find_truncatable_prime_sum();
-        }
+    #[test]
+    pub fn test_is_truncatable(){
+        let truncatable = is_truncatable_prime(3797);
+        assert!(truncatable);
+        let non_truncatable = is_truncatable_prime(3792);
+        assert!(!non_truncatable);
+    }
 
-        #[test]
-        pub fn test_biggest_trunc_prod(){
-            biggest_pandigital_product();
-        }
+    #[test]
+    pub fn find_truncatable_prime(){
+        find_truncatable_prime_sum();
+    }
 
-        #[test]
-        pub fn champernownes_constant_test(){
-            champernownes_constant();
-        }
+    #[test]
+    pub fn test_biggest_trunc_prod(){
+        biggest_pandigital_product();
+    }
 
-        #[test]
-        pub fn test_pandigital_prime(){
-            pandigital_prime()
-        }
+    #[test]
+    pub fn champernownes_constant_test(){
+        champernownes_constant();
+    }
 
-        #[test]
-        pub fn test_is_pandigital_prime(){
-            assert!(is_pandigital(1));
-            assert!(!is_pandigital(2));
-            assert!(is_pandigital(12));
-            assert!(is_pandigital(123));
-            assert!(is_pandigital(321));
-            assert!(!is_pandigital(321454));
-        }
+    #[test]
+    pub fn test_pandigital_prime(){
+        pandigital_prime()
+    }
 
-        #[test]
-        pub fn test_triangle_num(){
-            for i in 1..=1000{
-                let num = triangle_num(i);
-                println!("{num}");
-            }
-        }
+    #[test]
+    pub fn test_is_pandigital_prime(){
+        assert!(is_pandigital(1));
+        assert!(!is_pandigital(2));
+        assert!(is_pandigital(12));
+        assert!(is_pandigital(123));
+        assert!(is_pandigital(321));
+        assert!(!is_pandigital(321454));
+    }
 
-        #[test]
-        pub fn test_triangle_number(){
-            triangle_numbers()
-        }
-
-        #[test]
-        pub fn test_substring_divisibility(){
-            sub_string_divisibility();
+    #[test]
+    pub fn test_triangle_num(){
+        for i in 1..=1000{
+            let num = triangle_num(i);
+            println!("{num}");
         }
     }
+
+    #[test]
+    pub fn test_triangle_number(){
+        triangle_numbers()
+    }
+
+    #[test]
+    pub fn test_substring_divisibility(){
+        sub_string_divisibility();
+    }
+}
 
 
