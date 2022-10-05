@@ -4,6 +4,7 @@
 #![allow(unused_assignments)]
 
 mod pentagonal_numbers;
+mod triangle_pentagon_hexagon_numbers;
 
 extern crate core;
 
