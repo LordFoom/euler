@@ -5,6 +5,7 @@
 
 mod pentagonal_numbers;
 mod triangle_pentagon_hexagon_numbers;
+mod composite_number;
 
 extern crate core;
 
