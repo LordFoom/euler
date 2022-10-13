@@ -41,7 +41,7 @@ fn next_tri_pent_hex_num(){
     let mut curr_num = create_triangle_number(285);
     let mut the_number = curr_num;
     let mut not_found = true;
-    while(not_found){
+    while not_found {
         curr_num += 1;
         if is_triangle(curr_num as f64){
             if is_pentagonal(curr_num as f64){
