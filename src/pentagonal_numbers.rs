@@ -2,8 +2,6 @@
 #![allow(unused_variables)]
 #![allow(unused_assignments)]
 
-use std::f64::INFINITY;
-
 fn is_pentagonal(n:f64) -> bool {
     let test_num:f64 = ((24. * n + 1.).sqrt() + 1.) / 6. ;
     test_num == test_num.floor()
