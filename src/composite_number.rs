@@ -1,6 +1,5 @@
 fn is_prime(num_to_check: u64) -> bool {
-    let is_prime = !(2..=((num_to_check as f64).sqrt() as u64))
-        .any(|i| num_to_check % i == 0);
+    let is_prime = !(2..=((num_to_check as f64).sqrt() as u64)).any(|i| num_to_check % i == 0);
     // if is_prime{
     //     println!("Found prime number {num_to_check}")
     // }
@@ -11,7 +10,8 @@ fn is_prime(num_to_check: u64) -> bool {
 fn composite_number() {
     let mut smallest_defiant_composite = 0;
     for i in (35..).step_by(2) {
-        if !is_prime(i) {//non prime
+        if !is_prime(i) {
+            //non prime
             let mut found_prime = false;
             //now we subtract squares  and test for primes
             for j in 1..((i as f64).sqrt() as i64) {
