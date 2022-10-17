@@ -7,6 +7,7 @@ mod composite_number;
 mod integer_right_triangles;
 mod pentagonal_numbers;
 mod triangle_pentagon_hexagon_numbers;
+mod self_powers;
 
 extern crate core;
 
