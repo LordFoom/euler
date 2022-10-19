@@ -1,8 +1,6 @@
-use num_bigint::{BigInt};
-use num_traits::Zero;
+use num_bigint::BigInt;
 
-fn self_powers(upper_bound: u32) -> String{
-
+fn self_powers(upper_bound: u32) -> String {
     let mut running_total = BigInt::from(0);
     for i in 1..=upper_bound {
         let power = BigInt::from(i).pow(i);
@@ -24,18 +22,18 @@ fn self_powers(upper_bound: u32) -> String{
     // println!("{last_10:?}");
 }
 
-mod test{
+mod test {
     use super::*;
 
     #[test]
-    fn test_self_powers_up_to_ten(){
+    fn test_self_powers_up_to_ten() {
         let last_10 = self_powers(10);
         println!("{last_10}");
         assert_eq!(last_10, "0405071317");
     }
 
     #[test]
-    fn test_self_powers_up_to_ten_thousand(){
+    fn test_self_powers_up_to_ten_thousand() {
         let last_10 = self_powers(1000);
         println!("{last_10}")
     }
