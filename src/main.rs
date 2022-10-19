@@ -6,8 +6,9 @@
 mod composite_number;
 mod integer_right_triangles;
 mod pentagonal_numbers;
-mod triangle_pentagon_hexagon_numbers;
+mod prime_permutations;
 mod self_powers;
+mod triangle_pentagon_hexagon_numbers;
 
 extern crate core;
 
@@ -2133,8 +2134,8 @@ fn distinct_prime_factors() {
                 if !current_primes.contains(&i) && is_prime(i) {
                     current_primes.insert(i);
                 }
-                let twin_factor = n/i;
-                if !current_primes.contains(&i) && is_prime(twin_factor){
+                let twin_factor = n / i;
+                if !current_primes.contains(&i) && is_prime(twin_factor) {
                     current_primes.insert(twin_factor);
                 }
             }
