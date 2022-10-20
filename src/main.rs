@@ -9,6 +9,7 @@ mod pentagonal_numbers;
 mod prime_permutations;
 mod self_powers;
 mod triangle_pentagon_hexagon_numbers;
+mod consecutive_prime_sum;
 
 extern crate core;
 
