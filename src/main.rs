@@ -10,6 +10,7 @@ mod prime_permutations;
 mod self_powers;
 mod triangle_pentagon_hexagon_numbers;
 mod consecutive_prime_sum;
+mod prime_digit_replacement;
 
 extern crate core;
 
@@ -95,7 +96,16 @@ impl Fibonacci {
 }
 
 pub fn is_prime(num_to_check: u64) -> bool {
-    let is_prime = !(2..=((num_to_check as f64).sqrt() as u64)).any(|i| num_to_check % i == 0);
+    if num_to_check == 2 {
+        return true;
+    }
+    if num_to_check % 2 == 0 {
+       return false;
+   }
+    //if sum of digits divsible by 3 then it is divisible by 3
+    //should I implement above...maybe only for large numbers?
+
+    let is_prime = !( (3..=((num_to_check as f64).sqrt() as u64)).step_by(2) ).any(|i| num_to_check % i == 0);
     // if is_prime{
     //     println!("Found prime number {num_to_check}")
     // }
