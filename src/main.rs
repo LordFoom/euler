@@ -104,6 +104,14 @@ pub fn is_prime(num_to_check: u64) -> bool {
    }
     //if sum of digits divsible by 3 then it is divisible by 3
     //should I implement above...maybe only for large numbers?
+    if num_to_check > 100000 {
+        let mut digit_vec = Vec::new();
+        make_digit_vec(num_to_check as  usize, &mut digit_vec);
+        let sum:u64 = digit_vec.into_iter().map(|d| d as u64).sum();
+        if sum %3 == 0 {
+            return false;
+        }
+    }
 
     let is_prime = !( (3..=((num_to_check as f64).sqrt() as u64)).step_by(2) ).any(|i| num_to_check % i == 0);
     // if is_prime{
