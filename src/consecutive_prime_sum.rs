@@ -36,7 +36,7 @@ fn consecutive_primes(upper_bound: u64) {
     println!("The biggest prime that's a sum of consecutive primes is {max_prime}, made up of a sum of {seq_len} primes ");
 }
 
-fn generate_primes(upper_bound: u64, primes: &mut Vec<u64>) {
+pub fn generate_primes(upper_bound: u64, primes: &mut Vec<u64>) {
     for i in 2..upper_bound {
         if is_prime(i as u64) {
             // println!("Found prime {i}");
