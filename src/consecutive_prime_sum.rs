@@ -1,6 +1,6 @@
+use crate::is_prime;
 use std::cell::BorrowMutError;
 use std::collections::{BTreeMap, BTreeSet};
-use crate::is_prime;
 
 ///The prime 41, can be written as the sum of six consecutive primes:
 // 41 = 2 + 3 + 5 + 7 + 11 + 13
@@ -25,8 +25,7 @@ fn consecutive_primes(upper_bound: u64) {
                 break;
             }
             let curr_len = j - i;
-            if primes.binary_search(&sum).is_ok()
-                && sum > max_prime && curr_len >= seq_len {
+            if primes.binary_search(&sum).is_ok() && sum > max_prime && curr_len >= seq_len {
                 seq_len = curr_len + 1;
                 max_prime = sum;
                 println!("Found new max prime and sequence, {max_prime} of len {seq_len}");

@@ -4,13 +4,13 @@
 #![allow(unused_assignments)]
 
 mod composite_number;
+mod consecutive_prime_sum;
 mod integer_right_triangles;
 mod pentagonal_numbers;
+mod prime_digit_replacement;
 mod prime_permutations;
 mod self_powers;
 mod triangle_pentagon_hexagon_numbers;
-mod consecutive_prime_sum;
-mod prime_digit_replacement;
 
 extern crate core;
 
@@ -100,20 +100,21 @@ pub fn is_prime(num_to_check: u64) -> bool {
         return true;
     }
     if num_to_check % 2 == 0 {
-       return false;
-   }
+        return false;
+    }
     //if sum of digits divsible by 3 then it is divisible by 3
     //should I implement above...maybe only for large numbers?
     if num_to_check > 100000 {
         let mut digit_vec = Vec::new();
-        make_digit_vec(num_to_check as  usize, &mut digit_vec);
-        let sum:u64 = digit_vec.into_iter().map(|d| d as u64).sum();
-        if sum %3 == 0 {
+        make_digit_vec(num_to_check as usize, &mut digit_vec);
+        let sum: u64 = digit_vec.into_iter().map(|d| d as u64).sum();
+        if sum % 3 == 0 {
             return false;
         }
     }
 
-    let is_prime = !( (3..=((num_to_check as f64).sqrt() as u64)).step_by(2) ).any(|i| num_to_check % i == 0);
+    let is_prime =
+        !((3..=((num_to_check as f64).sqrt() as u64)).step_by(2)).any(|i| num_to_check % i == 0);
     // if is_prime{
     //     println!("Found prime number {num_to_check}")
     // }
