@@ -14,7 +14,7 @@ fn find_smallest_x_multiple() {
         //5 and 6 times anything other than 1 is an extra digit after multiplication
         if x_digits[0] == 1 {
             //first digit must be 1, otherwise 6x will have an extra digit
-            for i in 2..=C6 {
+            for i in 2..=6 {
                 //ensure 2x,3x,4x,5x,6x are all permutations
                 let x_i = x * i;
                 if !is_permutation(x, x_i) {
