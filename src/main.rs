@@ -3,15 +3,16 @@
 #![allow(unused_variables)]
 #![allow(unused_assignments)]
 
+mod combinatorics_selections;
 mod composite_number;
 mod consecutive_prime_sum;
 mod integer_right_triangles;
 mod pentagonal_numbers;
+mod permuted_multiples;
 mod prime_digit_replacement;
 mod prime_permutations;
 mod self_powers;
 mod triangle_pentagon_hexagon_numbers;
-mod permuted_multiples;
 
 extern crate core;
 
