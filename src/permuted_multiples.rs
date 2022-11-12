@@ -5,7 +5,6 @@ use crate::make_digit_vec;
 /// Find the smallest positive integer, x, such that 2x, 3x, 4x, 5x, and 6x,
 /// contain the same digits.
 
-
 fn find_smallest_x_multiple() {
     let mut multiple = 0;
     'outer: for x in 1.. {
@@ -25,9 +24,11 @@ fn find_smallest_x_multiple() {
             multiple = x;
             break;
         }
-    };
+    }
 
-    println!("Smallest number x with mutiple 2x,3x,4x,5x,6x values being permutations is {multiple}")
+    println!(
+        "Smallest number x with mutiple 2x,3x,4x,5x,6x values being permutations is {multiple}"
+    )
 }
 
 fn is_permutation(n1: usize, n2: usize) -> bool {
@@ -43,11 +44,8 @@ fn is_permutation(n1: usize, n2: usize) -> bool {
 
     digits_1.sort();
     digits_2.sort();
-    return digits_1.iter()
-                   .zip(digits_2.iter())
-                   .all(|(a, b)| a == b);
+    return digits_1.iter().zip(digits_2.iter()).all(|(a, b)| a == b);
 }
-
 
 mod test {
     use super::*;
