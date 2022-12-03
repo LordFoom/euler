@@ -13,6 +13,8 @@ mod prime_digit_replacement;
 mod prime_permutations;
 mod self_powers;
 mod triangle_pentagon_hexagon_numbers;
+mod poker_player;
+mod lychral_numbers;
 
 extern crate core;
 
