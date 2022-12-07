@@ -15,6 +15,7 @@ mod self_powers;
 mod triangle_pentagon_hexagon_numbers;
 mod poker_player;
 mod lychral_numbers;
+mod maximal_digit_sum;
 
 extern crate core;
 
