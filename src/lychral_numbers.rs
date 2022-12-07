@@ -42,7 +42,7 @@ pub fn reverse_number(num: &BigInt) -> BigInt {
     rev_num
 }
 
-fn make_digit_vec(n: &BigInt, dig_vec: &mut Vec<BigInt>) {
+pub fn make_digit_vec(n: &BigInt, dig_vec: &mut Vec<BigInt>) {
     let big_ten = BigInt::from(10);
     if n >= &big_ten {
         let next_int = n / big_ten;
