@@ -1,16 +1,14 @@
 use itertools::Itertools;
 use num_bigint::BigInt;
 
-
-
-fn lychrel_numbers()-> usize {
+fn lychrel_numbers() -> usize {
     let mut lychrel_count = 0;
     for num in 1..10_000 {
         let mut curr_num = BigInt::from(num);
         let mut found_palindrome = false;
         for count in 1..50 {
             let next_num = reverse_and_add(curr_num);
-            if is_palindrome( &next_num ) {
+            if is_palindrome(&next_num) {
                 found_palindrome = true;
                 // lychrel_count += 1;
                 break;
@@ -31,7 +29,8 @@ fn reverse_and_add(num: BigInt) -> BigInt {
 
 ///Reverse a number eg 12345 -> 54321
 pub fn reverse_number(num: &BigInt) -> BigInt {
-    if num < &BigInt::from(10) {//reversing single digit is just the single digit
+    if num < &BigInt::from(10) {
+        //reversing single digit is just the single digit
         return num.clone();
     }
     let mut num_vec = Vec::new();
@@ -76,9 +75,8 @@ mod test {
         assert_eq!(b4, rev_num);
     }
 
-
     #[test]
-    pub fn test_lychrel_count(){
+    pub fn test_lychrel_count() {
         let count = lychrel_numbers();
         println!("We found so many lychrel numbers: {count}")
     }
