@@ -7,15 +7,16 @@ mod combinatorics_selections;
 mod composite_number;
 mod consecutive_prime_sum;
 mod integer_right_triangles;
+mod lychral_numbers;
+mod maximal_digit_sum;
 mod pentagonal_numbers;
 mod permuted_multiples;
+mod poker_player;
 mod prime_digit_replacement;
 mod prime_permutations;
 mod self_powers;
+mod square_root_convergence;
 mod triangle_pentagon_hexagon_numbers;
-mod poker_player;
-mod lychral_numbers;
-mod maximal_digit_sum;
 
 extern crate core;
 
@@ -1527,6 +1528,11 @@ fn is_nine_dig_pandigital(num: usize) -> bool {
     dig_check.iter().all(|i| *i)
 }
 
+fn get_digits(n: usize) -> Vec<usize> {
+    let mut digits = Vec::<usize>::new();
+    make_digit_vec(n, &mut digits);
+    digits
+}
 fn make_digit_vec(n: usize, dig_vec: &mut Vec<usize>) {
     if n >= 10 {
         make_digit_vec(n / 10, dig_vec);

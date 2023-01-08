@@ -1,5 +1,4 @@
 use crate::consecutive_prime_sum::generate_primes;
-use crate::{is_prime, make_digit_vec};
 use itertools::Itertools;
 use regex::Regex;
 
