@@ -65,7 +65,7 @@ fn expansion_the_recursive_part(
 }
 
 ///Count expansions where enumerator.#digits > denominator.#digits
-fn count_enumerator_victories(upper_bound:usize) -> usize {
+fn count_enumerator_victories(upper_bound: usize) -> usize {
     let mut cache = HashMap::<usize, (BigInt, BigInt)>::new();
     let mut count = 0;
     for i in 8..=upper_bound {
@@ -80,13 +80,13 @@ fn count_enumerator_victories(upper_bound:usize) -> usize {
     count
 }
 
-fn get_digits_bigint(number:BigInt)->Vec<BigInt>{
-   let mut big_dig_vec = Vec::new();
+fn get_digits_bigint(number: BigInt) -> Vec<BigInt> {
+    let mut big_dig_vec = Vec::new();
     make_big_digit_vec(number, &mut big_dig_vec);
     big_dig_vec
 }
 
-fn make_big_digit_vec(n:BigInt, dig_vec:&mut Vec<BigInt>){
+fn make_big_digit_vec(n: BigInt, dig_vec: &mut Vec<BigInt>) {
     let ten = BigInt::from(10);
     if n >= ten {
         make_big_digit_vec(&n / &ten, dig_vec);
@@ -126,7 +126,7 @@ mod test {
 
     #[test]
     fn test_expansion_squareroot_two() {
-        let mut cache = HashMap::<usize, (BigInt,BigInt)>::new();
+        let mut cache = HashMap::<usize, (BigInt, BigInt)>::new();
         let fraction = expansion_square_root_approximation(1, &mut cache);
         assert_eq!((BigInt::from(3), BigInt::from(2)), fraction);
         let fraction = expansion_square_root_approximation(2, &mut cache);

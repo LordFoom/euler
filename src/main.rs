@@ -6,6 +6,7 @@
 mod combinatorics_selections;
 mod composite_number;
 mod consecutive_prime_sum;
+mod digit_swap_doubles;
 mod integer_right_triangles;
 mod lychral_numbers;
 mod maximal_digit_sum;
@@ -1958,6 +1959,10 @@ fn is_pandigital(num: usize) -> bool {
     //     println!("Found pandigital number {num}")
     // }
     pd
+}
+
+fn vec_to_num(vec: &[usize]) -> usize {
+    vec.iter().fold(0, |acc, x| acc * 10 + x)
 }
 
 fn pandigital_prime() {
