@@ -18,6 +18,7 @@ mod prime_permutations;
 mod self_powers;
 mod square_root_convergence;
 mod triangle_pentagon_hexagon_numbers;
+mod xor_decryption;
 
 extern crate core;
 
