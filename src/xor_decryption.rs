@@ -55,11 +55,22 @@ pub fn next_key_in_sequence(key: &mut String) -> String{
     if key.len() != 3 {
        panic!("woah, wrong length current key: {}", key);
     }
-    //split into chars
-    let last_char = key.chars().nth(2).unwrap();
-    let next_char = get_next_char_or_loop(last_char);
 
-    String::from("UNIMPLEMENTED")
+    let mut idx = key.len()-1;
+    let mut new_key = String::new();
+    while idx>=0 {
+        let last_char = key.chars().nth(idx).unwrap();
+        let next_last_char = get_next_char_or_loop(last_char);
+        new_key = next_last_char.to_string() + &new_key;
+        if next_last_char == 'a' {//then the last char looped}
+            idx -= 1;
+        }else {
+            //we are done
+            new_key = key[0..idx].to_string() + &new_key;
+            break;
+        }
+    }
+    new_key
 }
 
 
