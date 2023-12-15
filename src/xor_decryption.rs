@@ -48,7 +48,7 @@ pub fn decrypt_file(cipher_file: &str)->Result<String> {
 
 ///Generate the next key from aaa to zzz, duplicating to match the full length of the string
 /// Takes in the current key
-pub fn next_key_in_sequence(key: &mut String) -> String{
+pub fn next_key_in_sequence(key: &str) -> String{
     if key.is_empty() {
         return String::from("aaa");
     }
@@ -56,17 +56,17 @@ pub fn next_key_in_sequence(key: &mut String) -> String{
        panic!("woah, wrong length current key: {}", key);
     }
 
-    let mut idx = key.len()-1;
+    let mut idx:i8 = (key.len() - 1 ) as i8;
     let mut new_key = String::new();
     while idx>=0 {
-        let last_char = key.chars().nth(idx).unwrap();
+        let last_char = key.chars().nth(idx as usize).unwrap();
         let next_last_char = get_next_char_or_loop(last_char);
         new_key = next_last_char.to_string() + &new_key;
         if next_last_char == 'a' {//then the last char looped}
             idx -= 1;
         }else {
             //we are done
-            new_key = key[0..idx].to_string() + &new_key;
+            new_key = key[0..idx as usize].to_string() + &new_key;
             break;
         }
     }
@@ -111,7 +111,7 @@ pub fn load_dict(maybe_file_path: Option<String>)->Result<Vec<String>, io::Error
 
 #[cfg(test)]
 mod test{
-    use crate::xor_decryption::{get_next_char_or_loop, load_dict};
+    use crate::xor_decryption::{get_next_char_or_loop, load_dict, next_key_in_sequence};
 
     #[test]
     pub fn  test_load_dict() {
@@ -127,5 +127,17 @@ mod test{
         assert_eq!('n', n_char);
         let a_char = get_next_char_or_loop('z');
         assert_eq!('a', a_char);
+    }
+
+    #[test]
+    pub fn test_next_key_in_sequence(){
+        let key = "aaa";
+
+        let next_key = next_key_in_sequence(key);
+        assert_eq!("aab", next_key);
+
+        let key = "aaz";
+        let next_key = next_key_in_sequence(key);
+        assert_eq!("aba", next_key);
     }
 }
