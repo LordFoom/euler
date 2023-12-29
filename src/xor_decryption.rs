@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io;
 use std::io::{BufRead, Read};
 use anyhow::{Context, Result};
+use regex::Regex;
 
 //euler question number 59
 ///
@@ -31,19 +32,64 @@ use anyhow::{Context, Result};
 pub fn decrypt_file(cipher_file: &str)->Result<String> {
     //read the file
     let mut encrypted_file  = File::open(cipher_file)?;
-    let mut num_chars = String::new();
-    encrypted_file.read_to_string(&mut num_chars).context("failed to read file to string")?;
+    let mut encrypted_string = String::new();
+    encrypted_file.read_to_string(&mut encrypted_string).context("failed to read file to string")?;
     let mut key = String::new();
     let mut end_key = "zzz".to_string();
+    let mut final_unencoded_string = String::new();
     loop {
         let next_key = next_key_in_sequence(&mut key);
-        // let expanded key = duplicate_to_length(key, )
-        if end_key == next_key {
-            break;
+        let expanded_key = duplicate_to_length(&key, encrypted_string.len());
+        if expanded_key.len() != encrypted_string.len() {
+            panic!("You have got a key of len {} and a encrypted string of len {} ",
+                   expanded_key.len(),
+                   encrypted_string.len());
         }
+        // let straight_up_unencrypted = encrypted_string.clone() ^ expanded_key;
+        //now we xor with the encrypted string
+        let intermediate_bytes = encrypted_string
+            .as_bytes()
+            // .chars()
+            .into_iter()
+            .zip(expanded_key
+                .as_bytes()
+                // .chars()
+                .into_iter()
+            ).map(|(val, key)|  val ^ key)
+            .collect::<Vec<u8>>();
+
+        let unencrypted_str = std::str::from_utf8(&intermediate_bytes)?;
+        let dict = load_dict(None)?;
+        if is_common_english_words(unencrypted_str, dict)? {
+            //then we have found it
+        };
+        // if end_key == next_key {
+        //     // panic!("We failed to decrypt the file {}", "you done messed up");
+        //     break;
+        // }
 
     }
     Ok(String::new())
+}
+
+fn is_common_english_words(word_string: &str, dict: Vec<String>) -> Result<bool> {
+    let words = word_string.split(char::is_whitespace).collect::<Vec<&str>>();
+    //get rid of anything not a character....wil hyphens mess me up?
+    let regex = Regex::new("[^a-zA-Z]+")?;
+
+    let remaining = words
+        .into_iter()
+        .map(|word| regex.replace_all(word, ""))//strip out anything not a letter
+        .filter(|word |!dict.contains(&word.to_string()))
+        .map(|word| word.to_string())
+        .collect::<Vec<String>>();
+    return if remaining.is_empty() {
+        println!("FOUND ENGLISH WORDS :D, {:?}", word_string);
+        Ok(true)
+    } else {
+        println!("Found non-dictionary words, {:?}", remaining);
+        Ok(false)
+    }
 }
 
 ///Generate the next key from aaa to zzz, duplicating to match the full length of the string
@@ -71,6 +117,16 @@ pub fn next_key_in_sequence(key: &str) -> String{
         }
     }
     new_key
+}
+
+pub fn duplicate_to_length(key: &str, num_chars: usize) -> String {
+    let whole_count = num_chars/key.len();
+    //how many
+    let part_count = num_chars%key.len();
+    let whole_part = key.repeat(whole_count);
+    let partial_part = key[0..part_count].to_string();
+    let expanded_key = format!("{}{}", whole_part, partial_part );
+    expanded_key
 }
 
 
@@ -111,7 +167,7 @@ pub fn load_dict(maybe_file_path: Option<String>)->Result<Vec<String>, io::Error
 
 #[cfg(test)]
 mod test{
-    use crate::xor_decryption::{get_next_char_or_loop, load_dict, next_key_in_sequence};
+    use crate::xor_decryption::{duplicate_to_length, get_next_char_or_loop, is_common_english_words, load_dict, next_key_in_sequence};
 
     #[test]
     pub fn  test_load_dict() {
@@ -139,5 +195,36 @@ mod test{
         let key = "aaz";
         let next_key = next_key_in_sequence(key);
         assert_eq!("aba", next_key);
+
+        let key = "aba";
+        let next_key = next_key_in_sequence(key);
+        assert_eq!("abb", next_key);
+
+        let key = "abz";
+        let next_key = next_key_in_sequence(key);
+        assert_eq!("aca", next_key);
+
+        let key = "azz";
+        let next_key = next_key_in_sequence(key);
+        assert_eq!("baa", next_key);
+    }
+
+    #[test]
+    pub fn test_duplicate_to_length(){
+        let key = "aza";
+        let key_duplicated = duplicate_to_length(key, 14);
+        assert_eq!("azaazaazaazaaz", key_duplicated);
+
+        let key = "12345";
+        let key_duplicated = duplicate_to_length(key,17);
+        assert_eq!("12345123451234512", key_duplicated);
+    }
+
+    #[test]
+    pub fn test_is_common_english_words(){
+        let cew = "hello darkness my old friend!";
+        let dict = load_dict(None).unwrap();
+        let english_words = is_common_english_words(cew, dict).unwrap();
+        assert!(english_words)
     }
 }
