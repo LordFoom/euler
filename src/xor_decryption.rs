@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, Read};
+use std::str::from_utf8;
 use anyhow::{Context, Result};
 use regex::Regex;
 
@@ -31,9 +32,8 @@ use regex::Regex;
 
 pub fn decrypt_file(cipher_file: &str)->Result<String> {
     //read the file
-    let mut encrypted_file  = File::open(cipher_file)?;
-    let mut encrypted_string = String::new();
-    encrypted_file.read_to_string(&mut encrypted_string).context("failed to read file to string")?;
+    let encrypted_string = extract_encrypted_file_string(cipher_file)?;
+
     let mut key = String::new();
     let mut end_key = "zzz".to_string();
     let mut final_unencoded_string = String::new();
@@ -61,7 +61,9 @@ pub fn decrypt_file(cipher_file: &str)->Result<String> {
         let unencrypted_str = std::str::from_utf8(&intermediate_bytes)?;
         let dict = load_dict(None)?;
         if is_common_english_words(unencrypted_str, dict)? {
-            //then we have found it
+            println!("We have decrypted the file!");
+            final_unencoded_string = unencrypted_str.to_string();
+            break;
         };
         // if end_key == next_key {
         //     // panic!("We failed to decrypt the file {}", "you done messed up");
@@ -69,7 +71,25 @@ pub fn decrypt_file(cipher_file: &str)->Result<String> {
         // }
 
     }
-    Ok(String::new())
+    //we manated to find an encoded string
+    if !final_unencoded_string.is_empty() {
+        //now we do the asciki thingy
+        println!("This is the decrypted code: {}", final_unencoded_string);
+    }
+    Ok(final_unencoded_string)
+}
+
+fn extract_encrypted_file_string(cipher_file: &str) -> Result<String> {
+    let mut encrypted_file = File::open(cipher_file)?;
+    //this is a string of comma separated numbers like 128, 132,001, etc
+    let mut encrypted_string_array = String::new();
+    encrypted_file.read_to_string(&mut encrypted_string_array).context("failed to read file to string")?;
+    //split by ,
+    let vec_ascii_code = encrypted_string_array.split(",")
+                                               .map(|ascii_code| ascii_code.parse::<u8>().unwrap() )
+                                               .collect::<Vec<u8>>();
+    let encrypted_string = from_utf8(vec_ascii_code.as_slice())?;
+    Ok(encrypted_string.to_string())
 }
 
 fn is_common_english_words(word_string: &str, dict: Vec<String>) -> Result<bool> {
@@ -167,7 +187,7 @@ pub fn load_dict(maybe_file_path: Option<String>)->Result<Vec<String>, io::Error
 
 #[cfg(test)]
 mod test{
-    use crate::xor_decryption::{duplicate_to_length, get_next_char_or_loop, is_common_english_words, load_dict, next_key_in_sequence};
+    use crate::xor_decryption::{duplicate_to_length, extract_encrypted_file_string, get_next_char_or_loop, is_common_english_words, load_dict, next_key_in_sequence};
 
     #[test]
     pub fn  test_load_dict() {
@@ -226,5 +246,16 @@ mod test{
         let dict = load_dict(None).unwrap();
         let english_words = is_common_english_words(cew, dict).unwrap();
         assert!(english_words)
+    }
+
+    // #[test]
+    // pub fn  test_decrypt_file(){
+    //
+    // }
+
+    #[test]
+    pub fn test_extract_encrypted_file_string(){
+        let extracted_encrypted_string = extract_encrypted_file_string("./0059_cipher.txt").unwrap();
+        println!("extracted_encrypted_string: {}", extracted_encrypted_string);
     }
 }
