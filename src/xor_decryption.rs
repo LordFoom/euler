@@ -38,8 +38,11 @@ pub fn decrypt_file(cipher_file: &str)->Result<String> {
     let mut end_key = "zzz".to_string();
     let mut final_unencoded_string = String::new();
     loop {
+        // println!("About to get key after '{}'", key);
         let next_key = next_key_in_sequence(&mut key);
-        let expanded_key = duplicate_to_length(&key, encrypted_string.len());
+        // println!("next_key: '{}'", next_key);
+        key = next_key.clone();
+        let expanded_key = duplicate_to_length(&next_key, encrypted_string.len());
         if expanded_key.len() != encrypted_string.len() {
             panic!("You have got a key of len {} and a encrypted string of len {} ",
                    expanded_key.len(),
@@ -97,19 +100,28 @@ fn is_common_english_words(word_string: &str, dict: Vec<String>) -> Result<bool>
     //get rid of anything not a character....wil hyphens mess me up?
     let regex = Regex::new("[^a-zA-Z]+")?;
 
-    let remaining = words
-        .into_iter()
-        .map(|word| regex.replace_all(word, ""))//strip out anything not a letter
-        .filter(|word |!dict.contains(&word.to_string()))
-        .map(|word| word.to_string())
-        .collect::<Vec<String>>();
-    return if remaining.is_empty() {
-        println!("FOUND ENGLISH WORDS :D, {:?}", word_string);
-        Ok(true)
-    } else {
-        println!("Found non-dictionary words, {:?}", remaining);
-        Ok(false)
+    for word in words {
+        if !dict.contains(&word.to_string()){
+            println!("Found non-dictionary word, {}", word);
+            return Ok(false)
+        }
     }
+    println!("FOUND ENGLISH WORDS :D, {:?}", word_string);
+    Ok(true)
+    // let remaining = words
+    //     .into_iter()
+    //     // .map(|word| regex.replace_all(word, ""))//strip out anything not a letter
+    //     .filter(|word |!dict.contains(&word.to_string()))
+    //     .map(|word| word.to_string())
+    //     .collect::<Vec<String>>();
+    // return if remaining.is_empty() {
+    //     println!("FOUND ENGLISH WORDS :D, {:?}", word_string);
+    //     Ok(true)
+    // } else {
+    //     println!("Unsuccessful! ");
+    //     // println!("Found non-dictionary words, {:?}", remaining);
+    //     Ok(false)
+    // }
 }
 
 ///Generate the next key from aaa to zzz, duplicating to match the full length of the string
@@ -140,6 +152,7 @@ pub fn next_key_in_sequence(key: &str) -> String{
 }
 
 pub fn duplicate_to_length(key: &str, num_chars: usize) -> String {
+    // println!("Duplicating '{}'", key);
     let whole_count = num_chars/key.len();
     //how many
     let part_count = num_chars%key.len();
@@ -187,7 +200,7 @@ pub fn load_dict(maybe_file_path: Option<String>)->Result<Vec<String>, io::Error
 
 #[cfg(test)]
 mod test{
-    use crate::xor_decryption::{duplicate_to_length, extract_encrypted_file_string, get_next_char_or_loop, is_common_english_words, load_dict, next_key_in_sequence};
+    use crate::xor_decryption::{decrypt_file, duplicate_to_length, extract_encrypted_file_string, get_next_char_or_loop, is_common_english_words, load_dict, next_key_in_sequence};
 
     #[test]
     pub fn  test_load_dict() {
@@ -207,8 +220,11 @@ mod test{
 
     #[test]
     pub fn test_next_key_in_sequence(){
-        let key = "aaa";
+        let key = String::new();
+        let next_key = next_key_in_sequence(&key);
+        assert_eq!("aaa", next_key);
 
+        let key = "aaa";
         let next_key = next_key_in_sequence(key);
         assert_eq!("aab", next_key);
 
@@ -248,14 +264,16 @@ mod test{
         assert!(english_words)
     }
 
-    // #[test]
-    // pub fn  test_decrypt_file(){
-    //
-    // }
 
     #[test]
     pub fn test_extract_encrypted_file_string(){
         let extracted_encrypted_string = extract_encrypted_file_string("./0059_cipher.txt").unwrap();
         println!("extracted_encrypted_string: {}", extracted_encrypted_string);
+    }
+
+    #[test]
+    pub fn  test_decrypt_file(){
+        let decrypted_string = decrypt_file("./0059_cipher.txt").unwrap();
+        println!("Decrypted! {}", decrypted_string);
     }
 }
