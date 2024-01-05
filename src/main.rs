@@ -19,6 +19,7 @@ mod self_powers;
 mod square_root_convergence;
 mod triangle_pentagon_hexagon_numbers;
 mod xor_decryption;
+mod xor_decryption_2;
 
 extern crate core;
 
