@@ -20,6 +20,7 @@ mod square_root_convergence;
 mod triangle_pentagon_hexagon_numbers;
 mod xor_decryption;
 mod xor_decryption_2;
+mod xor_decryption_frequency_analysis;
 
 extern crate core;
 
