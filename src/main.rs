@@ -21,6 +21,7 @@ mod triangle_pentagon_hexagon_numbers;
 mod xor_decryption;
 mod xor_decryption_2;
 mod xor_decryption_frequency_analysis;
+mod prime_pair_sets;
 
 extern crate core;
 
