@@ -22,6 +22,7 @@ mod xor_decryption;
 mod xor_decryption_2;
 mod xor_decryption_frequency_analysis;
 mod prime_pair_sets;
+mod prime_pair_sets_2;
 
 extern crate core;
 
@@ -108,10 +109,11 @@ impl Fibonacci {
 }
 
 pub fn is_prime(num_to_check: u64) -> bool {
-    if num_to_check == 2 {
+    if num_to_check == 2{
         return true;
     }
     if num_to_check % 2 == 0 {
+
         return false;
     }
     //if sum of digits divsible by 3 then it is divisible by 3
