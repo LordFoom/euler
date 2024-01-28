@@ -5,7 +5,7 @@ use crate::{is_prime, is_prime_cached};
 
 pub fn calc_prime_list(list_size: usize) -> Result<()> {
     //let us get all primes below 10000
-    let primes = generate_primes(10000)?;
+    let primes = generate_primes(100000)?;
 
     let mut cache = BTreeSet::new();
 
@@ -54,7 +54,8 @@ pub fn calc_prime_list(list_size: usize) -> Result<()> {
             }
         }
     }
-    println!("What the woah?");k
+    println!("What the woah?");
+    println!("{:?}", candidates);
     Ok(())
 }
 

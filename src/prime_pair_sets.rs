@@ -37,6 +37,7 @@ pub fn produce_five_prime_set(){
 
 }
 
+
 pub fn is_all_concats_prime(primes: &Vec<u64>, cache: &mut BTreeSet<u64>) -> Result<bool> {
     let mut prime = true;
     'outer: for i in 0..primes.len()-1 {

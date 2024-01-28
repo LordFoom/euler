@@ -23,6 +23,7 @@ mod xor_decryption_2;
 mod xor_decryption_frequency_analysis;
 mod prime_pair_sets;
 mod prime_pair_sets_2;
+mod prime_pairs_3;
 
 extern crate core;
 
